@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .models import User
+from .forms import NewListingForm
 
 
 def index(request):
@@ -35,9 +36,6 @@ def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
 
-def create_new_listing(request):
-    pass
-
 
 def register(request):
     if request.method == "POST":
@@ -64,3 +62,7 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+
+def create_new_listing(request):
+    return render(request, "auctions/create_new_listing.html", {'form': NewListingForm})
