@@ -1,3 +1,35 @@
 body {
     padding: 10px;
+    background-color: #d4c7b0;
+}
+
+.auction_listings_container {
+    max-width: 70%;
+    align-items: center;
+}
+
+.auction_listings_container a {
+    text-decoration: none;
+    color: #3f4238;
+}
+
+.list_view_container {
+    display: flex;
+}
+
+.list_view_container:hover {
+}
+
+.list_view_container span {
+    font-style: italic;
+}
+
+.list_image {
+    height: 80px;
+    border: solid 2px #a5a58d;
+}
+
+.listed_image {
+    height: 200px;
+    border: solid 2px #a5a58d;
 }

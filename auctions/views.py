@@ -76,3 +76,10 @@ def create_new_listing(request):
                                       category=request.POST["category"])
 
     return render(request, "auctions/create_new_listing.html", {'form': NewListingForm})
+
+
+def view_listing(request, id):
+    listing = AuctionListing.objects.get(id=id)
+    return render(request, "auctions/listing.html", {
+        "listing": listing
+    })
