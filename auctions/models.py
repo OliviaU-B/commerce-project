@@ -17,7 +17,7 @@ class AuctionListing(models.Model):
     description = models.CharField(max_length=280)
     starting_bid = models.DecimalField(decimal_places=2, max_digits=8)
     image = models.URLField(blank=True)
-    category = models.CharField(max_length=64, choices=categories, blank=True)
+    category = models.IntegerField(max_length=64, choices=categories, blank=True)
 
     def __str__(self):
         return f"{self.name}"

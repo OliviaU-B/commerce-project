@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, AuctionListing
+from .models import User, AuctionListing, WatchedItem
 from .forms import NewListingForm
 
 
@@ -73,7 +74,7 @@ def create_new_listing(request):
                                       description=request.POST["description"],
                                       starting_bid=request.POST["starting_bid"],
                                       image=request.POST["image"],
-                                      category=request.POST["category"])
+                                      category=int(request.POST["category"]))
 
     return render(request, "auctions/create_new_listing.html", {'form': NewListingForm})
 
@@ -81,5 +82,17 @@ def create_new_listing(request):
 def view_listing(request, id):
     listing = AuctionListing.objects.get(id=id)
     return render(request, "auctions/listing.html", {
-        "listing": listing
+        "listing": listing,
     })
+
+
+@login_required
+def add_to_watchlist(request, id):
+    listing = AuctionListing.objects.get(id=id)
+    WatchedItem.objects.create(auction_listing=listing,
+                               user=request.user)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def view_watchlist(request):
+    return render(request, "auctions/watchlist.html")
