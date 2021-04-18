@@ -6,9 +6,17 @@
     <p>{{ listing.description }}</p>
     <img src="{{ listing.image }}" alt="{{ listing.name }}" class="listed_image">
     <p>Category: {{ listing.get_category_display }}</p>
-    <form method="POST" action="{% url 'add_to_watchlist' listing.id %}">
-        {% csrf_token %}
-        <button>Add to watchlist</button>
-    </form>
+
+    {% if is_watched %}
+        <form method="POST" action="{% url 'remove_from_watchlist' listing.id %}">
+            {% csrf_token %}
+            <button>Remove from watchlist</button>
+        </form>
+    {% else %}
+        <form method="POST" action="{% url 'add_to_watchlist' listing.id %}">
+            {% csrf_token %}
+            <button>Add to watchlist</button>
+        </form>
+    {% endif %}
 
 {% endblock %}

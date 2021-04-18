@@ -81,8 +81,11 @@ def create_new_listing(request):
 
 def view_listing(request, id):
     listing = AuctionListing.objects.get(id=id)
+    is_watched = WatchedItem.objects.filter(auction_listing=listing,
+                                            user=request.user)
     return render(request, "auctions/listing.html", {
         "listing": listing,
+        "is_watched": is_watched,
     })
 
 
@@ -94,9 +97,17 @@ def add_to_watchlist(request, id):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
+@login_required
+def remove_from_watchlist(request, id):
+    listing = AuctionListing.objects.get(id=id)
+    WatchedItem.objects.filter(auction_listing=listing,
+                               user=request.user).delete()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required
 def view_watchlist(request):
     watched_items = WatchedItem.objects.filter(user=request.user)
-
     return render(request, "auctions/watchlist.html", {
         "watched_items": watched_items,
     })
