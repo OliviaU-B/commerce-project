@@ -5,7 +5,10 @@
     <h1>{{ listing.name }}</h1>
     <p>{{ listing.description }}</p>
     <img src="{{ listing.image }}" alt="{{ listing.name }}" class="listed_image">
-    <p>Category: {{ listing.category }}</p>
-<button>Add to watchlist</button>
+    <p>Category: {{ listing.get_category_display }}</p>
+    <form method="POST" action="{% url 'add_to_watchlist' listing.id %}">
+        {% csrf_token %}
+        <button>Add to watchlist</button>
+    </form>
 
 {% endblock %}
