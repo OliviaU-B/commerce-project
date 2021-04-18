@@ -5,8 +5,8 @@
 <h1>Your watchlist</h1>
 
 <ul>
-    {% for item in watchlist %}
-        <li>{{ item.name }}</li>
+    {% for item in watched_items %}
+        <li><a href="{% url 'listing' item.id %}">{{ item }}</a></li>
     {% empty %}
         <li>There are not currently any items on your watchlist.</li>
     {% endfor %}

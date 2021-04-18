@@ -95,4 +95,8 @@ def add_to_watchlist(request, id):
 
 
 def view_watchlist(request):
-    return render(request, "auctions/watchlist.html")
+    watched_items = WatchedItem.objects.filter(user=request.user)
+
+    return render(request, "auctions/watchlist.html", {
+        "watched_items": watched_items,
+    })
