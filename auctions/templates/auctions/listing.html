@@ -7,6 +7,12 @@
     <img src="{{ listing.image }}" alt="{{ listing.name }}" class="listed_image">
     <p>Category: {{ listing.get_category_display }}</p>
 
+<form action="{% url 'place_bid' listing.id %}" method="POST">
+    {% csrf_token %}
+    <input type="number" step="0.01" name="bid_amount">
+    <input type="submit" value="Place Bid">
+</form>
+
     {% if is_watched %}
         <form method="POST" action="{% url 'remove_from_watchlist' listing.id %}">
             {% csrf_token %}

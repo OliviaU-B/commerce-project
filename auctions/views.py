@@ -1,11 +1,15 @@
+from importlib._common import _
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.db.models import Max
 
-from .models import User, AuctionListing, WatchedItem
+from .models import User, AuctionListing, WatchedItem, Bid
 from .forms import NewListingForm
 
 
@@ -111,3 +115,28 @@ def view_watchlist(request):
     return render(request, "auctions/watchlist.html", {
         "watched_items": watched_items,
     })
+
+
+@login_required
+def place_bid(request, id):
+    listing = AuctionListing.objects.get(id=id)
+    bid = float(request.POST["bid_amount"])
+    bids = Bid.objects.filter(auction_listing=listing)
+    if len(bids) != 0:
+        current_bid = Bid.objects.filter(auction_listing=listing).latest('created_at')
+        if bid > current_bid.amount:
+            Bid.objects.create(amount=bid,
+                               bidder=request.user,
+                               auction_listing=listing)
+        else:
+            raise ValidationError(_("Bid too low"))
+    else:
+        starting_bid = listing.starting_bid
+        if bid > starting_bid:
+            Bid.objects.create(amount=bid,
+                               bidder=request.user,
+                               auction_listing=listing)
+        else:
+            raise ValidationError(_("Bid too low"))
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

@@ -1,5 +1,7 @@
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
 
 
 class User(AbstractUser):
@@ -17,15 +19,24 @@ class AuctionListing(models.Model):
     description = models.CharField(max_length=280)
     starting_bid = models.DecimalField(decimal_places=2, max_digits=8)
     image = models.URLField(blank=True)
-    category = models.IntegerField(max_length=64, choices=categories, blank=True)
+    category = models.IntegerField(choices=categories, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.name}"
 
 
+class Bid(models.Model):
+    amount = models.DecimalField(decimal_places=2, max_digits=8)
+    bidder = models.ForeignKey(User, on_delete=models.CASCADE)
+    auction_listing = models.ForeignKey(AuctionListing, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
 class WatchedItem(models.Model):
     auction_listing = models.ForeignKey(AuctionListing, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.auction_listing}"
