@@ -2,6 +2,17 @@
 
 {% block body %}
 <h2>Active Listings</h2>
+<form action="{% url 'index' %}" method="GET">
+    <label for="category-select">Select a category:</label>
+    <select name="category" id="category-select">
+        <option disabled selected value>Select a category</option>
+        {% for key, value in categories %}
+        <option value="{{ key }}">{{ value }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit">
+</form>
+
 <div class="auction_listings_container">
     {% for auction in auctions %}
     <a href="{% url 'listing' auction.id %}">

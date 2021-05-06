@@ -14,8 +14,15 @@ from .forms import NewListingForm
 
 
 def index(request):
+    categories = AuctionListing.categories
+    if 'category' in request.GET:
+        category = request.GET['category']
+        auctions = AuctionListing.objects.filter(category=category)
+    else:
+        auctions = AuctionListing.objects.all()
     return render(request, "auctions/index.html", {
-        "auctions": AuctionListing.objects.all()
+        "auctions": auctions,
+        "categories": categories,
     })
 
 
