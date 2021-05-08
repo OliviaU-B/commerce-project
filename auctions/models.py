@@ -42,8 +42,8 @@ class WatchedItem(models.Model):
         return f"{self.auction_listing}"
 
 
-# class Comments(models.Model):
-#     listing_name = models.ForeignKey(AuctionListings.name, on_delete=models.CASCADE)
-#     user_name = models.ForeignKey(User.username, on_delete=models.CASCADE)
-#     comment = models.CharField(max_length=280)
-#     time = models.DateTimeField()
+class Comment(models.Model):
+    listing = models.ForeignKey(AuctionListing, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment_text = models.CharField(max_length=280)
+    time = models.DateTimeField(auto_now_add=True)

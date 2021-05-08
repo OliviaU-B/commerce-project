@@ -9,7 +9,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.db.models import Max
 
-from .models import User, AuctionListing, WatchedItem, Bid
+from .models import User, AuctionListing, WatchedItem, Bid, Comment
 from .forms import NewListingForm
 
 
@@ -94,9 +94,17 @@ def view_listing(request, id):
     listing = AuctionListing.objects.get(id=id)
     is_watched = WatchedItem.objects.filter(auction_listing=listing,
                                             user=request.user)
+    comments = Comment.objects.filter(listing=id)
+    if request.method == 'POST':
+        Comment.objects.create(listing=listing,
+                               user=request.user,
+                               comment_text=request.POST["comment_text"])
+        HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "is_watched": is_watched,
+        "comments": comments,
     })
 
 

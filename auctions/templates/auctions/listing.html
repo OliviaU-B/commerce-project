@@ -25,4 +25,22 @@
         </form>
     {% endif %}
 
+<h2>Comments</h2>
+
+{% for comment in comments %}
+    <div>
+        <span>{{ comment.user }}</span>
+        <span>{{ comment.time }}</span>
+        <p>{{ comment.comment_text }}</p>
+    </div>
+{% empty %}
+    <span>There are no comments yet. Add yours below!</span>
+{% endfor %}
+<h3>Add your comment</h3>
+<form action="" method="POST">
+    {% csrf_token %}
+    <textarea name="comment_text" id="comment_text" cols="30" rows="10"></textarea>
+    <input type="submit" value="Submit comment">
+</form>
+
 {% endblock %}
