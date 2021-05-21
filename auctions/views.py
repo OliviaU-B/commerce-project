@@ -17,9 +17,9 @@ def index(request):
     categories = AuctionListing.categories
     if 'category' in request.GET:
         category = request.GET['category']
-        auctions = AuctionListing.objects.filter(category=category)
+        auctions = AuctionListing.objects.filter(category=category, is_active=True)
     else:
-        auctions = AuctionListing.objects.all()
+        auctions = AuctionListing.objects.filter(is_active=True)
     return render(request, "auctions/index.html", {
         "auctions": auctions,
         "categories": categories,
@@ -116,7 +116,7 @@ def add_to_watchlist(request, id):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-@login_required
+@login_required(login_url="login")
 def remove_from_watchlist(request, id):
     listing = AuctionListing.objects.get(id=id)
     WatchedItem.objects.filter(auction_listing=listing,
@@ -124,7 +124,7 @@ def remove_from_watchlist(request, id):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-@login_required
+@login_required(login_url="login")
 def view_watchlist(request):
     watched_items = WatchedItem.objects.filter(user=request.user)
     return render(request, "auctions/watchlist.html", {
@@ -132,7 +132,7 @@ def view_watchlist(request):
     })
 
 
-@login_required
+@login_required(login_url="login")
 def place_bid(request, id):
     listing = AuctionListing.objects.get(id=id)
     bid = float(request.POST["bid_amount"])

@@ -7,40 +7,48 @@
     <img src="{{ listing.image }}" alt="{{ listing.name }}" class="listed_image">
     <p>Category: {{ listing.get_category_display }}</p>
 
-<form action="{% url 'place_bid' listing.id %}" method="POST">
-    {% csrf_token %}
-    <input type="number" step="0.01" name="bid_amount">
-    <input type="submit" value="Place Bid">
-</form>
+    {% if user.is_authenticated %}
+            <form action="{% url 'place_bid' listing.id %}" method="POST">
+                {% csrf_token %}
+                <input type="number" step="0.01" name="bid_amount">
+                <input type="submit" value="Place Bid">
+            </form>
 
-    {% if is_watched %}
-        <form method="POST" action="{% url 'remove_from_watchlist' listing.id %}">
-            {% csrf_token %}
-            <button>Remove from watchlist</button>
-        </form>
-    {% else %}
-        <form method="POST" action="{% url 'add_to_watchlist' listing.id %}">
-            {% csrf_token %}
-            <button>Add to watchlist</button>
-        </form>
+            {% if is_watched %}
+                <form method="POST" action="{% url 'remove_from_watchlist' listing.id %}">
+                    {% csrf_token %}
+                    <button>Remove from watchlist</button>
+                </form>
+            {% else %}
+                <form method="POST" action="{% url 'add_to_watchlist' listing.id %}">
+                    {% csrf_token %}
+                    <button>Add to watchlist</button>
+                </form>
+            {% endif %}
+
     {% endif %}
 
-<h2>Comments</h2>
+    <h2>Comments</h2>
 
-{% for comment in comments %}
-    <div>
-        <span>{{ comment.user }}</span>
-        <span>{{ comment.time }}</span>
-        <p>{{ comment.comment_text }}</p>
-    </div>
-{% empty %}
-    <span>There are no comments yet. Add yours below!</span>
-{% endfor %}
-<h3>Add your comment</h3>
-<form action="" method="POST">
-    {% csrf_token %}
-    <textarea name="comment_text" id="comment_text" cols="30" rows="10"></textarea>
-    <input type="submit" value="Submit comment">
-</form>
+    {% for comment in comments %}
+        <div>
+            <span>{{ comment.user }}</span>
+            <span>{{ comment.time }}</span>
+            <p>{{ comment.comment_text }}</p>
+        </div>
+    {% empty %}
+        <span>There are no comments yet. Add yours below!</span>
+    {% endfor %}
+    {% if user.is_authenticated %}
+        <h3>Add your comment</h3>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <textarea name="comment_text" id="comment_text" cols="30" rows="10"></textarea>
+            <input type="submit" value="Submit comment">
+        </form>
+    {% else %}
+        <span>Please login to add a comment.</span>
+    {% endif %}
+
 
 {% endblock %}
