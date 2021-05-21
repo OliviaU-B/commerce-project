@@ -8,6 +8,7 @@
     <p>Category: {{ listing.get_category_display }}</p>
 
     {% if user.is_authenticated %}
+        {% if is_active %}
             <form action="{% url 'place_bid' listing.id %}" method="POST">
                 {% csrf_token %}
                 <input type="number" step="0.01" name="bid_amount">
@@ -26,6 +27,25 @@
                 </form>
             {% endif %}
 
+            {% if is_owner %}
+                <form method="POST" action="{% url 'close_listing' listing.id%}">
+                    {% csrf_token %}
+                    <button>Close auction</button>
+                </form>
+            {% endif %}
+
+        {% else %}
+            {% if highest_bidder == current_user %}
+
+                <span>You have won this auction! Congratulations!</span>
+
+            {% else %}
+
+                <span>This auction has now ended. Please search for another auction to participate in.</span>
+
+            {% endif %}
+
+        {% endif %}
     {% endif %}
 
     <h2>Comments</h2>
