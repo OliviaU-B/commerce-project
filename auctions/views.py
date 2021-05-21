@@ -92,8 +92,20 @@ def create_new_listing(request):
 
 def view_listing(request, id):
     listing = AuctionListing.objects.get(id=id)
-    is_watched = WatchedItem.objects.filter(auction_listing=listing,
-                                            user=request.user)
+    is_active = listing.is_active
+    highest_bidder = None
+    is_owner = False
+    is_watched = False
+    if request.user == listing.created_by:
+        is_owner = True
+    if len(Bid.objects.filter(auction_listing=listing)):
+        highest_bid = Bid.objects.filter(auction_listing=listing).latest('created_at')
+        highest_bidder = User(id=highest_bid.bidder_id)
+    if request.user.is_authenticated:
+        is_watched = WatchedItem.objects.filter(auction_listing=listing,
+                                                user=request.user)
+    current_user = request.user
+
     comments = Comment.objects.filter(listing=id)
     if request.method == 'POST':
         Comment.objects.create(listing=listing,
@@ -105,10 +117,22 @@ def view_listing(request, id):
         "listing": listing,
         "is_watched": is_watched,
         "comments": comments,
+        "is_owner": is_owner,
+        "is_active": is_active,
+        "highest_bidder": highest_bidder,
+        "current_user": current_user,
     })
 
 
-@login_required
+def close_listing(request, id):
+    listing = AuctionListing.objects.get(id=id)
+    if listing.created_by == request.user:
+        listing.is_active=False
+        listing.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required(login_url="login")
 def add_to_watchlist(request, id):
     listing = AuctionListing.objects.get(id=id)
     WatchedItem.objects.create(auction_listing=listing,
