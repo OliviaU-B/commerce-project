@@ -6,6 +6,8 @@
     <p>{{ listing.description }}</p>
     <img src="{{ listing.image }}" alt="{{ listing.name }}" class="listed_image">
     <p>Category: {{ listing.get_category_display }}</p>
+    <p>Number of bids: {{ listing.bid_set.count }}</p>
+    <p>Current bid: £{{ listing.bid_set.latest.amount }}</p>
 
     {% if user.is_authenticated %}
         {% if is_active %}

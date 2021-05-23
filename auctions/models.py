@@ -34,6 +34,12 @@ class Bid(models.Model):
     auction_listing = models.ForeignKey(AuctionListing, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        get_latest_by = "created_at"
+
+    def __str__(self):
+        return f"{self.amount}"
+
 
 class WatchedItem(models.Model):
     auction_listing = models.ForeignKey(AuctionListing, on_delete=models.CASCADE)
