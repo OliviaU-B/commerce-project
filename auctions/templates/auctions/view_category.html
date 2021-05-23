@@ -1,0 +1,31 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+
+<h1>{{ Category }}</h1>
+    <div class="auction_listings_container">
+        {% for auction in auctions %}
+        <a href="{% url 'listing' auction.id %}">
+            <div class="list_view_container">
+                <div>
+                    <h3>{{ auction.name }}</h3>
+                    <p>{{ auction.description }}</p>
+                    <p>The starting bid is: £{{ auction.starting_bid }}</p>
+                    <p>There are {{ auction.bid_set.count }} bids on this so far.</p>
+                    {% if auction.bid_set.count > 0 %}
+                        <p>The current bid is £{{ auction.bid_set.latest.amount }}</p>
+                    {% endif %}
+                </div>
+                {% if auction.image %}
+                    <img src="{{ auction.image }}" alt="{{ auction.name }}" class="list_image">
+                {% else %}
+                    <img src="https://i.stack.imgur.com/y9DpT.jpg" alt="no image available" class="list_image">
+                {% endif %}
+            </div>
+        </a>
+        {% empty %}
+        <p>Sorry, there aren't any listings in this category at the moment.</p>
+        {% endfor %}
+    </div>
+
+{% endblock %}
